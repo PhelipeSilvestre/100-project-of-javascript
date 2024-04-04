@@ -43,9 +43,79 @@ isTouchDevice();
 gridButton.addEventListener("click", () => {
   container.innerHTML = "";
   let count = 0;
+
   for (let i = 0; i < gridHeight.value; i++) {
     count += 2;
-    let div = document.createEvent("div");
+    let div = document.createElement("div");
     div.classList.add("gridRow");
+
+    for (let j = 0; j < gridHeight.value; j++) {
+      count += 2;
+      let col = document.createElement("div");
+      col.classList.add("gridCol");
+      col.setAttribute("id", `gridCol${count}`);
+      col.addEventListener(events[deviceType].down, () => {
+        draw = true;
+        if (erase) {
+          col.style.backgroundColor = "transparent";
+        } else {
+          col.style.backgroundColor = colorButton.value;
+        }
+      });
+
+      col.addEventListener(events[deviceType].move, (e) => {
+        let elementID = document.elementFromPoint(
+          !isTouchDevice() ? e.clientX : e.changedTouches[0].clientX,
+          !isTouchDevice() ? e.clientY : e.changedTouches[0].clientY
+        ).id;
+        checker(elementID);
+      });
+
+      addEventListener(events[deviceType].up, () => {
+        draw = false;
+      });
+
+      div.appendChild(col);
+    }
+
+    container.appendChild(div);
   }
 });
+
+function checker(elementId) {
+  let gridColumns = document.querySelectorAll(".gridCol");
+  gridColumns.forEach((element) => {
+    if (elementId == element.id) {
+      if (draw && !erase) {
+        element.style.backgroundColor = colorButton.value;
+      } else if (draw && erase) {
+        element.style.backgroundColor = "transparent";
+      }
+    }
+  });
+}
+
+clearGridButton.addEventListener("click", () => {
+  container.innerHTML = "";
+});
+
+eraseBtn.addEventListener("click", () => {
+  erase = true;
+});
+
+paintBtn.addEventListener("click", () => {
+  erase = false;
+});
+
+gridWidth.addEventListener("input", () => {
+  widthValue.innerHTML = gridWidth.value;
+});
+
+gridHeight.addEventListener("input", () => {
+  heightValue.innerHTML = gridHeight.value;
+});
+
+window.onload = () => {
+  gridHeight.value = 0;
+  gridWidth.value = 0;
+};
