@@ -1,1 +1,1 @@
-# 100-days-of-javascript
+# 100-project-of-javascript
