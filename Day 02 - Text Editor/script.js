@@ -54,6 +54,45 @@ optionsButtons.forEach((button) => {
 
 advancedOptionsButtons.forEach((button) => {
   button.addEventListener("change", () => {
-    modifyText(button.id, false, null);
+    modifyText(button.id, false, button.value);
   });
 });
+
+linkButton.addEventListener("click", () => {
+  let userLink = prompt("Enter a link");
+  if (/http/i.test(userLink)) {
+    modifyText(linkButton.id, false, userLink);
+  } else {
+    userLink = "http://" + userLink;
+    modifyText(linkButton.id, false, userLink);
+  }
+});
+
+const highlighter = (className, needsRemoval) => {
+  className.forEach((button) => {
+    button.addEventListener("click", () => {
+      if (needsRemoval) {
+        let alreadActive = false;
+        if (button.classList.contains("active")) {
+          alreadActive = true;
+        }
+
+        highlighterRemover(className);
+
+        if (!alreadActive) {
+          button.classList.add("active");
+        }
+      } else {
+        button.classList.toggle("active");
+      }
+    });
+  });
+};
+
+const highlighterRemover = (className) => {
+  className.forEach((button) => {
+    button.classList.remove("active");
+  });
+};
+
+window.onload = initializer();
